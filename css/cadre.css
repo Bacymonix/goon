@@ -1,0 +1,46 @@
+/* ==========================================================
+   Cadre de téléphone : sur ordinateur, l'appli s'affiche dans
+   un téléphone. Sur un vrai téléphone, rien ne change.
+   ========================================================== */
+.phone-status, .home-bar { display: none; }
+.toast { opacity: 0; transition: transform .32s cubic-bezier(.2, .9, .3, 1.2), opacity .25s; }
+.toast.show { opacity: 1; }
+#phone { display: contents; }
+
+@media (min-width: 700px) and (min-height: 560px) and (hover: hover) and (pointer: fine) {
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    display: grid; place-items: center;
+    background:
+      radial-gradient(60% 50% at 50% 45%, rgba(255, 255, 255, .08), transparent 70%),
+      radial-gradient(circle at 20% 10%, var(--ocre-d), var(--brun) 75%);
+  }
+  .home-bar { display: block; }
+  #phone {
+    --frame-top: 44px;
+    display: block; position: relative; transform: translateZ(0);
+    height: min(844px, calc(100vh - 56px)); aspect-ratio: 390 / 844;
+    border-radius: 54px; overflow: hidden; background: var(--sable);
+    box-shadow: 0 0 0 11px #0d0d0f, 0 0 0 13px #3b3b40, 0 0 0 14px #0d0d0f, 0 40px 90px rgba(0, 0, 0, .6);
+  }
+  #phone::after { /* reflet discret sur le verre */
+    content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 500;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .06);
+  }
+  #app { height: 100%; min-height: 0; max-width: none; overflow-y: auto; overscroll-behavior: contain; box-shadow: none; scrollbar-width: none; }
+  #app::-webkit-scrollbar { display: none; }
+  #phone .topbar { padding-top: calc(var(--frame-top) + 2px); }
+  .phone-status {
+    display: flex; position: absolute; top: 0; left: 0; right: 0; height: var(--frame-top); z-index: 450;
+    align-items: center; justify-content: space-between; padding: 2px 32px 0 36px;
+    color: #fff; font: 800 15px 'Nunito', system-ui, sans-serif; pointer-events: none; text-shadow: 0 1px 2px rgba(0, 0, 0, .25);
+  }
+  .phone-status .island { position: absolute; left: 50%; top: 11px; transform: translateX(-50%); width: 112px; height: 31px; border-radius: 20px; background: #000; }
+  .phone-status .ps-r { display: flex; gap: 6px; align-items: center; font-size: 12px; }
+  .phone-status .batt { width: 24px; height: 12px; border: 2px solid #fff; border-radius: 4px; position: relative; padding: 1px; }
+  .phone-status .batt::before { content: ''; display: block; height: 100%; width: 78%; background: #fff; border-radius: 1px; }
+  .phone-status .batt::after { content: ''; position: absolute; right: -5px; top: 2px; width: 2px; height: 4px; background: #fff; border-radius: 0 1px 1px 0; }
+  .home-bar { position: absolute; z-index: 450; left: 50%; bottom: 7px; transform: translateX(-50%); width: 130px; height: 5px; border-radius: 3px; background: rgba(0, 0, 0, .35); pointer-events: none; }
+  .tabbar { padding-bottom: 18px; }
+  #app { padding-bottom: 100px; }
+}

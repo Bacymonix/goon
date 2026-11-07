@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Goon — Espace orga</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { background: var(--sable); }
+    .wrap { max-width: 760px; margin: 0 auto; padding: 24px 16px 60px; }
+    .adm-head { display: flex; gap: 14px; align-items: center; margin-bottom: 8px; }
+    .adm-head img { width: 56px; height: 56px; border-radius: 16px; }
+    .adm-head h1 { font-family: var(--display); font-weight: 400; font-size: 32px; color: var(--ocre); line-height: 1; }
+    .adm-head p { color: var(--brun-2); font-weight: 700; }
+    .intro { color: var(--brun-2); margin: 12px 0 20px; }
+    .card h2 { font-family: var(--display); font-weight: 400; font-size: 22px; margin-bottom: 4px; }
+    .card > p { margin-bottom: 12px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .grid .full { grid-column: 1 / -1; }
+    label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; font-weight: 800; color: var(--brun-2); }
+    input, select, textarea { padding: 10px 12px; border-radius: 12px; border: 2px solid var(--sable-d); background: #fff; font: inherit; font-weight: 700; color: var(--brun); }
+    input:focus, select:focus { outline: none; border-color: var(--lagon); }
+    .with-btn { display: flex; gap: 8px; }
+    .with-btn input { flex: 1; min-width: 0; text-transform: uppercase; letter-spacing: 1px; }
+    .out { margin-top: 14px; display: none; }
+    .out.show { display: block; }
+    pre { background: var(--brun); color: #FFE7C2; padding: 12px 14px; border-radius: 12px; font-size: 12.5px; overflow-x: auto; white-space: pre-wrap; word-break: break-all; }
+    .qr-row { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin-top: 14px; }
+    #qr { background: #fff; padding: 10px; border-radius: 12px; box-shadow: var(--shadow); }
+    #qr img, #qr canvas { display: block; width: 180px; height: 180px; }
+    .qr-actions { display: flex; flex-direction: column; gap: 8px; }
+    .qr-url { font-size: 12px; color: var(--muted); word-break: break-all; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--sable-d); }
+    th { font-size: 12px; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); }
+    .kind { font-size: 11px; font-weight: 900; padding: 2px 8px; border-radius: 999px; background: var(--lagon-50); color: var(--lagon-d); }
+    .ok { color: var(--lagon-d); font-weight: 900; }
+    .ko { color: var(--ocre); font-weight: 900; }
+    .warn-box { background: var(--ocre-50); border-left: 5px solid var(--ocre); padding: 12px 14px; border-radius: 12px; font-weight: 700; margin-bottom: 16px; }
+    .copied { animation: pop .4s; }
+    /* Affiche imprimable */
+    #poster { display: none; }
+    @media print {
+      body > *:not(#poster) { display: none !important; }
+      #poster { display: flex !important; flex-direction: column; align-items: center; justify-content: center; text-align: center; height: 100vh; padding: 40px; font-family: 'Nunito', sans-serif; }
+      #poster .p-logo { width: 120px; height: 120px; border-radius: 30px; }
+      #poster h1 { font-family: 'Lilita One', sans-serif; font-weight: 400; font-size: 64px; color: #0E5A8A; margin: 18px 0 4px; }
+      #poster h2 { font-size: 26px; margin-bottom: 26px; }
+      #poster .p-qr img, #poster .p-qr canvas { width: 360px; height: 360px; }
+      #poster p { font-size: 20px; margin-top: 24px; font-weight: 700; }
+      #poster .p-band { width: 100%; height: 22px; margin-top: 30px; background: repeating-linear-gradient(90deg, #0E5A8A 0 22px, #FF7A59 22px 44px, #F2C14E 44px 66px); }
+    }
+    @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="adm-head"><img src="icons/icon.svg" alt=""><div><h1>Espace orga</h1><p>Réservé aux membres de Goon</p></div></div>
+    <p class="intro">Cette page sert à <b>créer les codes secrets</b> (événements, quêtes, trésors cachés), leurs <b>QR codes</b> et le <b>code PIN du staff</b>. Elle ne stocke rien : elle te donne des lignes à coller dans <code>js/config.js</code>, puis tu remets le site en ligne.</p>
+    <div class="warn-box" id="demo-warn" hidden>⚠️ Le code PIN staff est encore celui de démo (1234) et les codes de démo sont publics dans le README. Change-les avant le lancement !</div>
+
+    <section class="card">
+      <h2>1 · Créer un code</h2>
+      <p>Les étudiants tapent ce code dans l'appli (ou scannent le QR) pour gagner des perles. Un code ne marche qu'une fois par personne.</p>
+      <form id="f-code" class="grid">
+        <label>Type
+          <select name="kind">
+            <option value="event">Événement (présence)</option>
+            <option value="quete">Quête</option>
+            <option value="trésor">Trésor caché</option>
+            <option value="bonus">Bonus</option>
+          </select>
+        </label>
+        <label>Code secret
+          <span class="with-btn"><input name="code" required maxlength="24" placeholder="EX : SOIREE-7K2"><button type="button" class="btn sm ghost" id="gen">Générer</button></span>
+        </label>
+        <label class="full">Titre affiché<input name="title" required maxlength="60" placeholder="Ex : La Nuit des Trésors"></label>
+        <label class="full">Description (quêtes)<input name="desc" maxlength="120" placeholder="Ex : Prends un selfie avec 3 membres de Goon"></label>
+        <label>Perles gagnées<input name="perles" type="number" min="0" max="500" value="50" required></label>
+        <label>Essais bonus au harpon<input name="tries" type="number" min="0" max="5" value="0"></label>
+        <label>Valable à partir de (optionnel)<input name="from" type="datetime-local"></label>
+        <label>Expire le (optionnel)<input name="until" type="datetime-local"></label>
+        <div class="full"><button class="btn btn-lagon">Créer le code</button></div>
+      </form>
+      <div class="out" id="out-code">
+        <p><b>À coller dans <code>codes: [ … ]</code> de config.js :</b></p>
+        <pre id="snippet"></pre>
+        <button class="btn sm ghost" data-copy="snippet">Copier la ligne</button>
+        <p class="small muted" style="margin-top:10px">Pour lier un événement du planning à ce code, ajoute <code>code: '<span id="code-id"></span>'</code> à l'événement.</p>
+        <div class="qr-row">
+          <div id="qr"></div>
+          <div class="qr-actions">
+            <button class="btn sm" id="dl-qr">Télécharger le QR</button>
+            <button class="btn sm btn-lagon" id="print">Imprimer une affiche</button>
+            <span class="qr-url" id="qr-url"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>2 · Code PIN du staff</h2>
+      <p>Les membres de la liste le tapent pour valider les bons (crêpe offerte, réduc…) sur le téléphone des étudiants. Choisis-en un difficile à deviner.</p>
+      <form id="f-pin" class="with-btn"><input name="pin" required minlength="4" maxlength="12" placeholder="Nouveau code PIN" style="text-transform:none"><button class="btn">Générer</button></form>
+      <div class="out" id="out-pin"><p><b>Remplace la ligne <code>staffPinHash</code> de config.js par :</b></p><pre id="pin-snippet"></pre><button class="btn sm ghost" data-copy="pin-snippet">Copier</button></div>
+    </section>
+
+    <section class="card">
+      <h2>3 · Tester un code</h2>
+      <p>Vérifie qu'un code est bien reconnu par la config actuelle.</p>
+      <form id="f-test" class="with-btn"><input name="code" required placeholder="Code à tester"><button class="btn ghost">Tester</button></form>
+      <p id="test-res" style="margin-top:10px"></p>
+    </section>
+
+    <section class="card">
+      <h2>4 · Codes dans la config</h2>
+      <p>Seules les empreintes sont stockées : impossible de retrouver un code à partir d'ici. Garde ta liste de codes en lieu sûr.</p>
+      <div style="overflow-x:auto"><table id="codes"></table></div>
+    </section>
+  </div>
+
+  <div id="poster"><img class="p-logo" src="icons/icon.svg" alt=""><h1>Goon</h1><h2 id="p-title"></h2><div class="p-qr" id="p-qr"></div><p id="p-sub">Scanne-moi avec l'appareil photo de ton téléphone</p><div class="p-band"></div></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/core.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

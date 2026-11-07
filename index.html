@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Goon</title>
+  <meta name="description" content="L'appli de Goon, liste BDS : planning de campagne, jeu, classement et cadeaux.">
+  <meta name="theme-color" content="#0E5A8A">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Goon">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/jeux-sos.css">
+  <link rel="stylesheet" href="css/cadre.css">
+</head>
+<body>
+ <div id="phone">
+  <div class="phone-status" aria-hidden="true"><span data-phone-time>9:41</span><i class="island"></i><span class="ps-r">5G <i class="batt"></i></span></div>
+  <div id="app">
+    <header class="topbar">
+      <a class="brand" href="#accueil" data-go="accueil"><img src="icons/icon.svg" alt=""><span>Goon</span></a>
+      <button class="wallet-pill" data-go="comptoir" aria-label="Mes perles"><svg class="ico-perle" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="currentColor"/><circle cx="9" cy="9" r="2.6" fill="#fff" opacity=".65"/></svg><b id="hdr-wallet">0</b></button>
+      <button class="avatar-btn" data-action="profile" aria-label="Mon profil"><span id="hdr-avatar">🐠</span></button>
+    </header>
+
+    <main id="view"></main>
+
+    <nav class="tabbar" aria-label="Navigation">
+      <button class="tab" data-go="accueil">
+        <svg viewBox="0 0 24 24"><path d="M10 2.5 12 5l2-2.5"/><path d="M12 5 4 21h16L12 5z"/><path d="M12 13.5 9.5 21h5z"/></svg>
+        <span>Port</span>
+      </button>
+      <button class="tab" data-go="planning">
+        <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M7.5 14h2M11 14h2M14.5 14h2M7.5 17.5h2M11 17.5h2"/></svg>
+        <span>Planning</span>
+      </button>
+      <button class="tab tab-center" data-go="arene">
+        <span class="tab-ico"><svg viewBox="0 0 24 24"><circle cx="11" cy="13" r="8"/><circle cx="11" cy="13" r="4.2"/><circle cx="11" cy="13" r="1" fill="currentColor"/><path d="M11 13 20 4M17 3.5h3.5V7"/></svg></span>
+        <span>Arène</span>
+      </button>
+      <button class="tab" data-go="sos">
+        <svg viewBox="0 0 24 24"><path d="M4 17a8 8 0 0 1 16 0z"/><path d="M2.5 20h19M12 9V7.2M10.2 7.2h3.6"/></svg>
+        <span>SOS</span>
+      </button>
+      <button class="tab" data-go="comptoir">
+        <svg viewBox="0 0 24 24"><rect x="3" y="9" width="18" height="12" rx="2"/><path d="M3 13h18M12 9v12"/><path d="M12 9S10.5 4.5 8 4.6 6.2 9 12 9zM12 9s1.5-4.5 4-4.4S17.8 9 12 9z"/></svg>
+        <span>Comptoir</span>
+      </button>
+    </nav>
+  </div>
+
+  <div id="onboard" hidden></div>
+  <div id="game" hidden></div>
+  <div id="modal-root"></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <i class="home-bar" aria-hidden="true"></i>
+ </div>
+ <script>
+   // heure de la barre d'état du cadre téléphone (ordinateur uniquement)
+   (function t() { var d = new Date(), el = document.querySelector('[data-phone-time]'); if (el) el.textContent = d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0'); setTimeout(t, 15000); })();
+ </script>
+
+  <script src="js/config.js"></script>
+  <script src="js/core.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/games/engine.js"></script>
+  <script src="js/games/runner.js"></script>
+  <script src="js/games/dash.js"></script>
+  <script src="js/games/poisson.js"></script>
+  <script src="js/games/stack.js"></script>
+  <script src="js/games/games.js"></script>
+  <script src="js/sos.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

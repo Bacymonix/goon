@@ -1,0 +1,50 @@
+rules_version = '2';
+// Règles de sécurité Firestore pour Goon (à coller dans Firebase > Firestore > Règles)
+// Elles limitent la triche "facile" : score qui ne peut que monter, par petits paliers,
+// clan non modifiable, scores du jour plafonnés, stock décrémenté un par un.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+
+    match /players/{uid} {
+      allow read: if true;
+      allow create: if signedIn() && request.auth.uid == uid
+        && request.resource.data.season is int
+        && request.resource.data.season <= 800
+        && request.resource.data.name is string
+        && request.resource.data.name.size() <= 16;
+      allow update: if signedIn() && request.auth.uid == uid
+        && request.resource.data.season is int
+        && request.resource.data.season >= resource.data.season
+        && request.resource.data.season - resource.data.season <= 800
+        && request.resource.data.clan == resource.data.clan
+        && request.resource.data.name.size() <= 16;
+    }
+
+    match /clans/{clan} {
+      allow read: if true;
+      allow create: if signedIn() && clan in ['requin', 'pieuvre', 'dauphin', 'tortue']
+        && request.resource.data.get('total', 0) <= 800
+        && request.resource.data.get('members', 0) <= 1;
+      allow update: if signedIn()
+        && request.resource.data.get('total', 0) >= resource.data.get('total', 0)
+        && request.resource.data.get('total', 0) - resource.data.get('total', 0) <= 800
+        && request.resource.data.get('members', 0) - resource.data.get('members', 0) <= 1
+        && request.resource.data.get('members', 0) >= resource.data.get('members', 0);
+    }
+
+    match /daily/{day}/{game}/{uid} {
+      allow read: if true;
+      allow write: if signedIn() && request.auth.uid == uid
+        && game in ['archer', 'runner', 'dash', 'poisson', 'stack']
+        && request.resource.data.score is int
+        && request.resource.data.score <= 100000;
+    }
+
+    match /stock/{id} {
+      allow read: if true;
+      allow create: if signedIn() && request.resource.data.claimed == 1;
+      allow update: if signedIn() && request.resource.data.claimed == resource.data.claimed + 1;
+    }
+  }
+}
