@@ -14,7 +14,7 @@ window.GOON_CONFIG = {
   voteEnd: '2026-11-20T18:00',
   voteText: 'Le 20 novembre, vote Goon 🐚',
 
-  appUrl: '',
+  appUrl: 'https://bacymonix.github.io/goon/',
   salt: 'goon',
   staffPinHash: 'e860c7d30ae402917674d1c49c6f24db3bda99e42ff04f45898b2ad3e187f1c5',
 
